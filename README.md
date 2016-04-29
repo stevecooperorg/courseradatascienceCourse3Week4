@@ -100,7 +100,7 @@ firstSet <- firstSet %>%
 So far, the data looks like this;
 
 <!-- html table generated in R 3.2.5 by xtable 1.8-2 package -->
-<!-- Sat Apr 30 00:46:25 2016 -->
+<!-- Sat Apr 30 00:53:59 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -201,7 +201,7 @@ firstSet <- firstSet %>%
 ```
 
 <!-- html table generated in R 3.2.5 by xtable 1.8-2 package -->
-<!-- Sat Apr 30 00:46:28 2016 -->
+<!-- Sat Apr 30 00:54:01 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -354,7 +354,7 @@ melted <- melt(firstSet, id=c("subject", "activity"))
 The melted data looks something like this;
 
 <!-- html table generated in R 3.2.5 by xtable 1.8-2 package -->
-<!-- Sat Apr 30 00:46:47 2016 -->
+<!-- Sat Apr 30 00:54:21 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -498,6 +498,147 @@ Now we `dcast` (un-melt), grouping by subject and activity and averaging the oth
 secondSet <- dcast(melted, subject + activity ~ variable, mean)
 ```
 
+Here's a part of the second set.
+
+<!-- html table generated in R 3.2.5 by xtable 1.8-2 package -->
+<!-- Sat Apr 30 00:54:21 2016 -->
+<table border="1">
+<tr>
+<th>
+</th>
+<th>
+subject
+</th>
+<th>
+activity
+</th>
+<th>
+body\_acceleration\_x.mean
+</th>
+<th>
+body\_acceleration\_x.sd
+</th>
+</tr>
+<tr>
+<td align="right">
+3
+</td>
+<td>
+1
+</td>
+<td>
+WALKING\_DOWNSTAIRS
+</td>
+<td align="right">
+0.00
+</td>
+<td align="right">
+0.34
+</td>
+</tr>
+<tr>
+<td align="right">
+4
+</td>
+<td>
+1
+</td>
+<td>
+SITTING
+</td>
+<td align="right">
+-0.00
+</td>
+<td align="right">
+0.01
+</td>
+</tr>
+<tr>
+<td align="right">
+5
+</td>
+<td>
+1
+</td>
+<td>
+STANDING
+</td>
+<td align="right">
+0.00
+</td>
+<td align="right">
+0.00
+</td>
+</tr>
+<tr>
+<td align="right">
+6
+</td>
+<td>
+1
+</td>
+<td>
+LAYING
+</td>
+<td align="right">
+-0.01
+</td>
+<td align="right">
+0.02
+</td>
+</tr>
+<tr>
+<td align="right">
+7
+</td>
+<td>
+2
+</td>
+<td>
+WALKING
+</td>
+<td align="right">
+-0.00
+</td>
+<td align="right">
+0.19
+</td>
+</tr>
+<tr>
+<td align="right">
+8
+</td>
+<td>
+2
+</td>
+<td>
+WALKING\_UPSTAIRS
+</td>
+<td align="right">
+-0.01
+</td>
+<td align="right">
+0.23
+</td>
+</tr>
+<tr>
+<td align="right">
+9
+</td>
+<td>
+2
+</td>
+<td>
+WALKING\_DOWNSTAIRS
+</td>
+<td align="right">
+0.00
+</td>
+<td align="right">
+0.34
+</td>
+</tr>
+</table>
     ## [1] TRUE
 
     ## [1] TRUE

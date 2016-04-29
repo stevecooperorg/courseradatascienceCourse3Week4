@@ -167,6 +167,10 @@ print(xtable(melted[94:100, ]), type='html')
 #'the other variables;
 secondSet <- dcast(melted, subject + activity ~ variable, mean)
 
+#' Here's a part of the second set.
+#+ tabular2nndset, results='asis', echo=FALSE
+print(xtable(select(secondSet[3:9,], subject, activity, body_acceleration_x.mean, body_acceleration_x.sd)), type='html')
+
 #+ save, results='hidden', echo=FALSE
 if (!file.exists(options.out.dir)) {
   dir.create(options.out.dir)
