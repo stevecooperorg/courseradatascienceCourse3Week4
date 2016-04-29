@@ -1,9 +1,7 @@
-==================================================================
-Tidy version of Human Activity Recognition Using Smartphones Dataset
-Version 1.0
-==================================================================
-Steve Cooper
-==================================================================
+# Tidy version of Human Activity Recognition Using Smartphones Dataset
+##Version 1.0
+
+*Steve Cooper*
 
 In this data, analysis, the Human Activity Recognition Using Smartphones Dataset was analysed and summarised.[1]
 
