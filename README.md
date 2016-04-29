@@ -73,29 +73,34 @@ readCombinedVector <- function(nameFragment, directory=options.data.dir) {
 }
 ```
 
-Now the tidying itself. We first load the vector of subjects and the activities these subjects were performing. The subject files contain a list of subject IDs. since this is a categorical variable, it's converted to a factor. \#+ readSublect, results='hidden'
+Preparing the first set
+=======================
+
+Now the tidying itself. We first load the vector of subjects and the activities these subjects were performing. The subject files contain a list of subject IDs. since this is a categorical variable, it's converted to a factor.
 
 ``` r
 firstSet <-
   tbl_df(data.frame(subject = factor(readCombinedVector("subject_"))))
 ```
 
-The activity vector encodesactivities like "WALKING" or "WALKING\_UPSTAIRS", but as a numeric vector. We make this more meaningful by associating each number with a name. These labels exist in `activity_labels.txt`, so we're going to load that file to get the right names, and then convert the subject vector into a factor.
+The activity vector encodes activities like "WALKING" or "WALKING\_UPSTAIRS", but as a numeric vector. We make this more meaningful by associating each number with a name. These labels exist in `activity_labels.txt`, so we're going to load that file to get the right names, and then convert the subject vector into a factor.
 
 ``` r
 activityLevelFile <- read.fwf(file.path(options.data.dir, 'activity_labels.txt'),
                               widths = c(1,-1,99),
                               col.names = c("id", "factor"),
                               stringsAsFactors=FALSE)
-activityLevelNames <- activityLevelFile$factor[order(activityLevelFile$id)]
-activity.level.names <- factor(activityLevelNames,levels=activityLevelNames)
+activity.level.names <- activityLevelFile$factor[order(activityLevelFile$id)]
+activity.level.factor <- factor(activity.level.names,levels=activity.level.names)
 
 firstSet <- firstSet %>%
-  cbind(activity=factor(readCombinedVector("y_"), level=1:6, labels=activity.level.names))
+  cbind(activity=factor(readCombinedVector("y_"), level=1:6, labels=activity.level.factor))
 ```
 
+So far, the data looks like this;
+
 <!-- html table generated in R 3.2.5 by xtable 1.8-2 package -->
-<!-- Sat Apr 30 00:29:35 2016 -->
+<!-- Sat Apr 30 00:46:25 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -174,7 +179,7 @@ STANDING
 </td>
 </tr>
 </table>
-Generally in R, `cbind` (column bind) can be used to add columns to an existing table. Here, we use `cbind` with a function which reads a data file (say, total x-axis acceleration), produces the mean and standard deviation, and `cbind`s to a frame, resulting in the original frame but with the two new summary variables. By calling several times, we produce our summary table with mean/sd pairs.
+Generally in R, `cbind` (column bind) can be used to add columns to an existing table. Here, we use `cbind` with a function which reads a data file (say, total x-axis acceleration), produces the mean and standard deviation, and uses `cbind` to add the two summary values to the data frame `x`. By calling several times, we produce our summary table with mean/sd pairs.
 
 ``` r
 cbindMeanSd <- function(x, nameFragment, prefix) {
@@ -188,7 +193,7 @@ cbindMeanSd <- function(x, nameFragment, prefix) {
 }
 ```
 
-all the other files are read in and column-bound to the existing table. Here is the result of adding the first variable;
+all the other files are read in and column-bound to the existing table. Here are a few rows after adding the first variable;
 
 ``` r
 firstSet <- firstSet %>%
@@ -196,7 +201,7 @@ firstSet <- firstSet %>%
 ```
 
 <!-- html table generated in R 3.2.5 by xtable 1.8-2 package -->
-<!-- Sat Apr 30 00:29:37 2016 -->
+<!-- Sat Apr 30 00:46:28 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -329,10 +334,16 @@ firstSet <- firstSet %>%
   cbindMeanSd("body_gyro_x_", "body_angular_velocity_x") %>%
   cbindMeanSd("body_gyro_y_", "body_angular_velocity_y") %>%
   cbindMeanSd("body_gyro_z_", "body_angular_velocity_z")
+```
 
-# finally, we order by subject and activity.
+finally, we order by subject and activity.
+
+``` r
 firstSet <- firstSet %>% arrange(subject, activity)
 ```
+
+Preparing the second set
+========================
 
 Preparing the second set is fairly straightforward. We melt into a narrow format, then re-assemble, using the mean function to summarise by subject and activity.
 
@@ -343,7 +354,7 @@ melted <- melt(firstSet, id=c("subject", "activity"))
 The melted data looks something like this;
 
 <!-- html table generated in R 3.2.5 by xtable 1.8-2 package -->
-<!-- Sat Apr 30 00:29:56 2016 -->
+<!-- Sat Apr 30 00:46:47 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -487,36 +498,9 @@ Now we `dcast` (un-melt), grouping by subject and activity and averaging the oth
 secondSet <- dcast(melted, subject + activity ~ variable, mean)
 ```
 
-We save the result to disk;
-
-``` r
-if (!file.exists(options.out.dir)) {
-  dir.create(options.out.dir)
-}
-
-fullPathToFirstSet <- file.path(options.out.dir, options.out.firstSet)
-if (file.exists(fullPathToFirstSet)) {
-  file.remove(fullPathToFirstSet)
-}
-```
-
     ## [1] TRUE
 
-``` r
-write.csv(firstSet, file=fullPathToFirstSet)
-
-fullPathToSecondSet <- file.path(options.out.dir, options.out.secondSet)
-if (file.exists(fullPathToSecondSet)) {
-  file.remove(fullPathToSecondSet)
-}
-```
-
     ## [1] TRUE
-
-``` r
-write.csv(firstSet, file=fullPathToFirstSet)
-write.csv(secondSet, file=fullPathToSecondSet)
-```
 
 To confirm that data makes some sense, here are two plots of the x-axis acceleration's stanard deviation. If this is high, it means the subject is moving about laterally at many different speeds, indicating movement. If low, it indicates a sedentary activity. If we have done the tidying correctly, we would expect the sitting, standing, and laying numbers to be very low, while the walking ones to be higher, and this is exactly what we see
 

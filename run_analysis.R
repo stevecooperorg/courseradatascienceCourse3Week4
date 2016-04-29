@@ -84,16 +84,18 @@ readCombinedVector <- function(nameFragment, directory=options.data.dir) {
   vector
 }
 
+#'# Preparing the first set
+#'
 #' Now the tidying itself. We first load the vector of subjects and the
 #' activities these subjects were performing. The subject files contain a list of
 #' subject IDs. since this is a categorical variable, it's converted to a
 #' factor.
-#' #+ readSublect, results='hidden'
+#+ readSubject, results='hidden'
 
 firstSet <-
   tbl_df(data.frame(subject = factor(readCombinedVector("subject_"))))
 
-#' The activity vector encodesactivities like "WALKING" or
+#' The activity vector encodes activities like "WALKING" or
 #' "WALKING_UPSTAIRS", but as a numeric vector. We make this more meaningful by associating each number with a name.
 #' These labels exist in `activity_labels.txt`, so
 #' we're going to load that file to get the right names, and then convert the subject vector into a factor.
@@ -101,21 +103,21 @@ activityLevelFile <- read.fwf(file.path(options.data.dir, 'activity_labels.txt')
                               widths = c(1,-1,99),
                               col.names = c("id", "factor"),
                               stringsAsFactors=FALSE)
-activityLevelNames <- activityLevelFile$factor[order(activityLevelFile$id)]
-activity.level.names <- factor(activityLevelNames,levels=activityLevelNames)
+activity.level.names <- activityLevelFile$factor[order(activityLevelFile$id)]
+activity.level.factor <- factor(activity.level.names,levels=activity.level.names)
 
 firstSet <- firstSet %>%
-  cbind(activity=factor(readCombinedVector("y_"), level=1:6, labels=activity.level.names))
+  cbind(activity=factor(readCombinedVector("y_"), level=1:6, labels=activity.level.factor))
 
+#' So far, the data looks like this;
 #+ tabularData2cols, results='asis', echo=FALSE
 print(xtable(firstSet[1:6, ]), type='html')
 
 #' Generally in R, `cbind` (column bind) can be used to add columns to an
 #' existing table. Here, we use `cbind` with a function which reads a data file
 #' (say, total x-axis acceleration), produces the mean and standard deviation,
-#' and `cbind`s to a frame, resulting in the original frame but with the two new
-#' summary variables. By calling several times, we produce our summary table
-#' with mean/sd pairs.
+#' and uses `cbind` to add the two summary values to the data frame `x`. By
+#' calling several times, we produce our summary table with mean/sd pairs.
 cbindMeanSd <- function(x, nameFragment, prefix) {
   raw <- readCombinedVector(nameFragment)
   obs <- matrix(raw, nrow=nrow(x), byrow=TRUE)
@@ -126,7 +128,8 @@ cbindMeanSd <- function(x, nameFragment, prefix) {
   cbind(x, summaries)
 }
 
-#' all the other files are read in and column-bound to the existing table. Here is the result of adding the first variable;
+#' all the other files are read in and column-bound to the existing table. Here
+#' are a few rows after adding the first variable;
 
 firstSet <- firstSet %>%
   cbindMeanSd("body_acc_x_", "body_acceleration_x")
@@ -146,9 +149,11 @@ firstSet <- firstSet %>%
   cbindMeanSd("body_gyro_y_", "body_angular_velocity_y") %>%
   cbindMeanSd("body_gyro_z_", "body_angular_velocity_z")
 
-# finally, we order by subject and activity.
+#' finally, we order by subject and activity.
 firstSet <- firstSet %>% arrange(subject, activity)
 
+#'# Preparing the second set
+#'
 #' Preparing the second set is fairly straightforward. We melt into a narrow
 #' format, then re-assemble, using the mean function to summarise by subject
 #' and activity.
@@ -158,11 +163,11 @@ melted <- melt(firstSet, id=c("subject", "activity"))
 #+ tabularMelted, results='asis', echo=FALSE
 print(xtable(melted[94:100, ]), type='html')
 
-#'Now we `dcast` (un-melt), grouping by subject and activity and averaging the other variables;
+#'Now we `dcast` (un-melt), grouping by subject and activity and averaging
+#'the other variables;
 secondSet <- dcast(melted, subject + activity ~ variable, mean)
 
-#' We save the result to disk;
-#+ save, reults='hidden'
+#+ save, results='hidden', echo=FALSE
 if (!file.exists(options.out.dir)) {
   dir.create(options.out.dir)
 }
@@ -192,7 +197,7 @@ write.csv(secondSet, file=fullPathToSecondSet)
 #+ firstplot, echo=FALSE
 
 print(ggplot(firstSet, aes(activity,body_acceleration_x.sd)) +
-  labs(x="Activity", y="mean X-axis acceleration") +
+  labs(x="Activity", y="X-axis acceleration standard deviation") +
   geom_jitter(aes(color=subject), alpha=0.25, width=0.5) +
   geom_boxplot(fill="transparent") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
@@ -202,7 +207,7 @@ print(ggplot(firstSet, aes(activity,body_acceleration_x.sd)) +
 #+ secondplot, echo=FALSE
 
 print(ggplot(secondSet, aes(activity,body_acceleration_x.sd)) +
-  labs(x="Activity", y="mean X-axis acceleration") +
+  labs(x="Activity", y="X-axis acceleration standard deviation") +
   geom_jitter(aes(color=subject), alpha=0.75, width=0.50) +
   geom_boxplot(fill="transparent") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
