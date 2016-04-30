@@ -16,14 +16,18 @@ In the first set, for each record it is provided:
 
 - An identifier of the subject who carried out the experiment. (numeric in the range 1:30)
 - A label of the type of activity. (for example, "WALKING" or "LAYING")
-- Arithmetic Mean and Standard Deviation of the total acceleration, body, acceleration, and angular velocity measured during each activity.
+- Arithmetic Mean and Standard Deviation of the total acceleration in standard gravity units 'g', measured during each activity.
+- Arithmetic Mean and Standard Deviation of the body acceleration in standard gravity units 'g', measured during each activity.
+- Angular velocity in radians/second, measured during each activity.
 
 In the second set, for each record it is provided:
 =========================================
 
 - An identifier for each subject in the experiment. (numeric in the range 1:30)
 - A label for each type of activity.  (for example, "WALKING" or "LAYING")
-- Arithmetic Mean and Standard Deviation of the total acceleration, body, acceleration, and angular velocity, aggregated across all activities.
+- Arithmetic Mean and Standard Deviation of the total acceleration in standard gravity units 'g', aggregated across all activities.
+- Arithmetic Mean and Standard Deviation of the body acceleration in standard gravity units 'g', aggregated across all activities.
+- Angular velocity in radians/second, aggregated across all activities.
 
 Files
 =====
