@@ -14,15 +14,15 @@ There are two outputs of the analysis. The first set summarises the smartphone r
 In the first set, for each record it is provided:
 =================================================
 
-- An identifier of the subject who carried out the experiment.
-- A label of the type of activity.
+- An identifier of the subject who carried out the experiment. (numeric in the range 1:30)
+- A label of the type of activity. (for example, "WALKING" or "LAYING")
 - Arithmetic Mean and Standard Deviation of the total acceleration, body, acceleration, and angular velocity measured during each activity.
 
 In the second set, for each record it is provided:
 =========================================
 
-- An identifier for each subject in the experiment.
-- A label for each type of activity.
+- An identifier for each subject in the experiment. (numeric in the range 1:30)
+- A label for each type of activity.  (for example, "WALKING" or "LAYING")
 - Arithmetic Mean and Standard Deviation of the total acceleration, body, acceleration, and angular velocity, aggregated across all activities.
 
 Files
