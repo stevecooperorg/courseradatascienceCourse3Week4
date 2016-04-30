@@ -28,8 +28,8 @@ In the second set, for each record it is provided:
 Files
 =====
 
-- out/firstSet.csv - the first data set
-- out/secondSet.csv - the second data set
+- firstSet.txt - the first data set
+- secondSet.txt - the second data set
 - run_analysis.R - the analysis script.
 - README.md - the detailed description of how the tidying was performed.
 - CODEBOOK.md - this file.

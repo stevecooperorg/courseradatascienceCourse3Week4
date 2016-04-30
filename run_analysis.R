@@ -47,9 +47,9 @@ library(dplyr, reshape2, ggplot2)
 
 options.data.dir <- "./UCI HAR Dataset"
 options.datasets <- c("test","train")
-options.out.dir  <- "./out"
-options.out.firstSet  <- "firstSet.csv"
-options.out.secondSet <- "secondSet.csv"
+options.out.dir  <- "."
+options.out.firstSet  <- "firstSet.txt"
+options.out.secondSet <- "secondSet.txt"
 
 #' To perform tidying, we must load data from many different files, all of which
 #' contain numeric vectors and have a particular naming scheme. We define a
@@ -180,15 +180,14 @@ fullPathToFirstSet <- file.path(options.out.dir, options.out.firstSet)
 if (file.exists(fullPathToFirstSet)) {
   file.remove(fullPathToFirstSet)
 }
-write.csv(firstSet, file=fullPathToFirstSet)
+write.table(firstSet, file=fullPathToFirstSet, row.name=FALSE)
 
 fullPathToSecondSet <- file.path(options.out.dir, options.out.secondSet)
 if (file.exists(fullPathToSecondSet)) {
   file.remove(fullPathToSecondSet)
 }
 
-write.csv(firstSet, file=fullPathToFirstSet)
-write.csv(secondSet, file=fullPathToSecondSet)
+write.table(secondSet, file=fullPathToSecondSet, row.name=FALSE)
 
 #' To confirm that data makes some sense, here are two plots of the x-axis
 #' acceleration's stanard deviation. If this is high, it means the subject is

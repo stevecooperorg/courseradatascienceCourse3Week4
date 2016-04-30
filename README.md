@@ -37,9 +37,9 @@ To allow others to reproduce the data, some configuration options are provided. 
 ``` r
 options.data.dir <- "./UCI HAR Dataset"
 options.datasets <- c("test","train")
-options.out.dir  <- "./out"
-options.out.firstSet  <- "firstSet.csv"
-options.out.secondSet <- "secondSet.csv"
+options.out.dir  <- "."
+options.out.firstSet  <- "firstSet.txt"
+options.out.secondSet <- "secondSet.txt"
 ```
 
 To perform tidying, we must load data from many different files, all of which contain numeric vectors and have a particular naming scheme. We define a function to read files which matches a unique pattern. For instance, if `nameFragment` is `'body_acc_x_'`, it will find `'test/Inertial Signals/body_acc_x_test.txt'`, and `'train/Inertial Signals/body_acc_x_train.txt'`, and read them into a single, long vector.
@@ -100,7 +100,7 @@ firstSet <- firstSet %>%
 So far, the data looks like this;
 
 <!-- html table generated in R 3.2.5 by xtable 1.8-2 package -->
-<!-- Sat Apr 30 00:53:59 2016 -->
+<!-- Sat Apr 30 01:04:20 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -201,7 +201,7 @@ firstSet <- firstSet %>%
 ```
 
 <!-- html table generated in R 3.2.5 by xtable 1.8-2 package -->
-<!-- Sat Apr 30 00:54:01 2016 -->
+<!-- Sat Apr 30 01:04:23 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -354,7 +354,7 @@ melted <- melt(firstSet, id=c("subject", "activity"))
 The melted data looks something like this;
 
 <!-- html table generated in R 3.2.5 by xtable 1.8-2 package -->
-<!-- Sat Apr 30 00:54:21 2016 -->
+<!-- Sat Apr 30 01:04:42 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -501,7 +501,7 @@ secondSet <- dcast(melted, subject + activity ~ variable, mean)
 Here's a part of the second set.
 
 <!-- html table generated in R 3.2.5 by xtable 1.8-2 package -->
-<!-- Sat Apr 30 00:54:21 2016 -->
+<!-- Sat Apr 30 01:04:42 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -639,10 +639,6 @@ WALKING\_DOWNSTAIRS
 </td>
 </tr>
 </table>
-    ## [1] TRUE
-
-    ## [1] TRUE
-
 To confirm that data makes some sense, here are two plots of the x-axis acceleration's stanard deviation. If this is high, it means the subject is moving about laterally at many different speeds, indicating movement. If low, it indicates a sedentary activity. If we have done the tidying correctly, we would expect the sitting, standing, and laying numbers to be very low, while the walking ones to be higher, and this is exactly what we see
 
 This plots the first set of 10299 records
